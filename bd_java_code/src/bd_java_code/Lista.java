@@ -3,7 +3,7 @@ package bd_java_code;
 import java.util.ArrayList;
 
 public class Lista extends Candidatos {
-	public ArrayList <Pessoa> lista_pessoas;
+	private ArrayList <Pessoa> lista_pessoas;
 	public Lista() {
 		// TODO Auto-generated constructor stub
 		super();
