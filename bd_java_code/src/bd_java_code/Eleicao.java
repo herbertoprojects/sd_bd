@@ -1,5 +1,7 @@
 package bd_java_code;
 
+import java.util.ArrayList;
+
 public class Eleicao {
 	private int id;
 	private String tipo;
@@ -8,6 +10,9 @@ public class Eleicao {
 	private String titulo;
 	private String descricao;
 	private int nVotoBNA;
+	private Departamento dep;
+	private Faculdade fac;
+	private ArrayList<Candidatos> candidatos;
 	
 	public Eleicao() {
 		// TODO Auto-generated constructor stub
@@ -40,5 +45,17 @@ public class Eleicao {
 		this.tipo = tipo;
 	}public void setTitulo(String titulo) {
 		this.titulo = titulo;
+	}public Departamento getDep() {
+		return dep;
+	}public Faculdade getFac() {
+		return fac;
+	}public void setDep(Departamento dep) {
+		this.dep = dep;
+	}public void setFac(Faculdade fac) {
+		this.fac = fac;
+	}public ArrayList<Candidatos> getCandidatos() {
+		return candidatos;
+	}public void setCandidatos(ArrayList<Candidatos> candidatos) {
+		this.candidatos = candidatos;
 	}
 }
