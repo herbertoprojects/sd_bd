@@ -61,100 +61,10 @@ public interface RMI_1 extends Remote{
 	public boolean removeMesaVoto(int id_MV) throws RemoteException;
 	public ArrayList <String> listMesaVoto(int id_elei) throws RemoteException;
 	public ArrayList <String> listMesaVoto() throws RemoteException;
-	
-	
-	//Alterar propriedades de uma eleição
-	/*
-	public String detalheEleicao(String eleicao) throws RemoteException;
-	*/
-	
-	public String getTipo(int id_elei) throws RemoteException;
-	public boolean setTipo(int id_elei, String n_tipo) throws RemoteException;
-	
-	public String getDataInicio(int id_elei) throws RemoteException;
-	public String getDataFim(int id_elei) throws RemoteException;
-	public boolean setDataInicio(String d_inicio, int id_elei) throws RemoteException;
-	public boolean setDataFim(String d_fim, int id_elei) throws RemoteException;
-	
-	public String getTitulo(int id_elei) throws RemoteException;
-	public boolean setTitulo(String n_titulo,int id_elei) throws RemoteException;
-	
-	public String getDescricao(int id_elei) throws RemoteException;
-	public boolean setDescricao(String n_descricao, int id_elei) throws RemoteException;
-	
-	/*
-	//Saber em que local votou cada eleitor
-	//A pesquisa é feita apenas por um valor, o resto fica a null
-	// na pequisa por nome pode surgir mais que um eleitor por isso retorna um array list
-	public ArrayList <String> localVotoEleitor(String nome,int numCC,int telefone) throws RemoteException;
-	
-	//Mostrar o estado das mesas de voto
-	public String estadoMesas(String mesaVoto) throws RemoteException;*/
-	public void mensagemRealTime(int eleicao,dadosEleicoes imprimir) throws RemoteException;
-	
-	/*//Mostrar eleitores em tempo real
-	//terá se ser implementado pela consola noutra interface, ou ainda temos de decidir
-	public String eleitoresTReal() throws RemoteException;
-	
-	//Término da eleição na data, hora e minuto marcados, não precisa de ser implementado na interface, isto é automaticamente feito pelo
-	//servidor de RMI
-	//s
-	
-	//Consultar resultados detalhados de eleições passadas
-	public String consultaResulPass(String eleicao) throws RemoteException;
-	
-	
-	//Alterar dados pessoais
-	//todas as alterações são feitas atravez do nº Cartao de Cidadao
-	//tipo, nome, password, faculdade, departamento, telefone, morada, numeroCc, dataCc
-	 */
-	
-	public int getNCC (String nome_p,int telefone_p) throws RemoteException;// nº Cartao de Cidadao
-	public boolean setNCC(int nCC, int novoNCC) throws RemoteException;
-	
-	public String getTipoP(int nCC)throws RemoteException;
-	public boolean setTipoP(int nCC, String n_tipo) throws RemoteException;
-	
-	public String getNome(int nCC)throws RemoteException;
-	public boolean setNome(int nCC, String n_nome) throws RemoteException;
-	
-	public String getPassword(int nCC)throws RemoteException;
-	public boolean setPassword(int nCC, String n_password) throws RemoteException;
-	
-	public String getFacudade(int nCC)throws RemoteException;
-	public boolean setFacudade(int nCC, String n_faculdade) throws RemoteException;
-	
-	public String getDepartamento(int nCC)throws RemoteException;
-	public boolean setDepartamento(int nCC, String n_departamento) throws RemoteException;
-	
-	public int getTelefone(int nCC)throws RemoteException;
-	public boolean setTelefone(int nCC, int n_telefone) throws RemoteException;
-	
-	public String getMorada(int nCC)throws RemoteException;
-	public boolean setMorada(int nCC, String n_morada) throws RemoteException;
-	
-	public String getDataCC(int nCC)throws RemoteException;
-	public boolean setDataCC(int nCC, String n_data) throws RemoteException;
-	
-	
-	
-	//Gerir membros de cada mesa de voto
-	public String addMembrosMesaVoto(int mesaVoto,int nCC1, int nCC2, int nCC3) throws RemoteException;
-	public String removeMembroMesaVoto(int mesaVoto) throws RemoteException;
-	public ArrayList <String> listaMembrosMesaVoto(int id_mesaVoto) throws RemoteException;
+
+	//public void mensagemRealTime(int eleicao,dadosEleicoes imprimir) throws RemoteException;
 	
 
-	//voto antecipado
-	public boolean votaAntecipadamente(int nCC, int id_elei) throws RemoteException;
-	
-	/*
-	//Metodos para servidor TCP
-	//todas as comunicações terao de ser autenticadas por questao de seguranca
-	//-Ligar-se
-	//-Votar
-	//-Desbloquear Voto
-	//-Votar antecipadamente
-	*/
 	public String ligarServidor(String nomeMesaVoto,String passwordMesaVoto) throws RemoteException;
 	
 	public boolean desbloquearUser(String nomeMesaVoto, String passwordMesaVoto, int nCC, int elect) throws RemoteException;
