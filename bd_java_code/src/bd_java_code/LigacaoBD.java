@@ -15,16 +15,19 @@ public class LigacaoBD {
 		baseDadosPassword = "proj";
 		baseDadosUser = "proj";
 		
-		conectaBD();//Serve para conectar a base de dados
+		System.out.println(conectaBD());//Serve para conectar a base de dados
 	}
 	
 	public boolean conectaBD (){
 		try {
-			conn = DriverManager.getConnection(baseDadosURL, baseDadosUser, baseDadosPassword);
-			return true;
-		} catch (SQLException e) {
-			return false;
+			Class.forName("oracle.jdbc.driver.OracleDriver").newInstance();
+			return (conn = DriverManager.getConnection(baseDadosURL, baseDadosUser, baseDadosPassword)) != null;
+		} catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+			  System.out.println(e.getMessage());
+			  return false;
 		}
 	}
 	
+	
+
 }
