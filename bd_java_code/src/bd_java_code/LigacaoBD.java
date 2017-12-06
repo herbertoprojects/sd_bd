@@ -32,7 +32,7 @@ public class LigacaoBD {
 	public ResultSet executaSQL(String comando, int num){
 		try{
 			Statement stm;
-			conn.setAutoCommit(true);
+			conn.setAutoCommit(false);
 			if((stm = conn.createStatement())==null){
 				if(num<5){
 					this.conectaBD();
@@ -41,7 +41,10 @@ public class LigacaoBD {
 				System.out.println("Comando Invalido, ou conflito!");
 				return null;
 			}
-			return stm.executeQuery(comando);			
+			ResultSet resultado = stm.executeQuery(comando);
+			conn.commit();
+			stm.close();
+			return resultado;			
 		}
 		catch(SQLException e){
 			if(num<5){
@@ -56,7 +59,7 @@ public class LigacaoBD {
 	public boolean executaUpdateSQL(String comando, int num){
 		try{
 			Statement stm;
-			conn.setAutoCommit(true);
+			conn.setAutoCommit(false);
 			if((stm = conn.createStatement())==null){
 				if(num<5){
 					this.conectaBD();
@@ -65,7 +68,10 @@ public class LigacaoBD {
 				System.out.println("Comando Invalido, ou conflito!");
 				return false;
 			}
-			return stm.executeUpdate(comando)!=0;
+			boolean resultado = stm.executeUpdate(comando)!=0;
+			stm.close();
+			conn.commit();
+			return resultado;
 		}
 		catch(SQLException e){
 			if(num<5){

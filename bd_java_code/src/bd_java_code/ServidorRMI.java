@@ -109,7 +109,7 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 
 	@Override
 	public boolean removePessoa(Pessoa pessoa) throws RemoteException {
-		String comando = "DELETE FROM Pessoa WHERE NCC = "+pessoa.getNcc();
+		String comando = "DELETE FROM Pessoa WHERE NCC = ("+pessoa.getNcc()+")";
 		System.out.println(comando);
 		return (ligacao.executaUpdateSQL(comando));
 	}
