@@ -26,7 +26,7 @@ CREATE TABLE Candidatos (
 CREATE TABLE Departamento (
   sigla varchar2(10) NOT NULL, 
   Fac   varchar2(10) NOT NULL, 
-  Nome  varchar2(40) NOT NULL, 
+  Nome  varchar2(120) NOT NULL, 
   PRIMARY KEY (sigla, 
   Fac));
 CREATE TABLE DtemE (
@@ -47,7 +47,7 @@ CREATE TABLE Eleicao (
   PRIMARY KEY (ID));
 CREATE TABLE Faculdade (
   sigla varchar2(10) NOT NULL, 
-  Nome  varchar2(40) NOT NULL UNIQUE, 
+  Nome  varchar2(120) NOT NULL UNIQUE, 
   PRIMARY KEY (sigla));
 CREATE TABLE Individual (
   PessoaID            number(10) NOT NULL, 
