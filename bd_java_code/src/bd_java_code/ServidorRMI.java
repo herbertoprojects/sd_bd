@@ -17,7 +17,7 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 		// TODO Auto-generated method stub
 		ServidorRMI server = new ServidorRMI();
 		Pessoa pessoa = new Pessoa(12121280,"Francisco Simoes","Funcionario","123456",910123123,"Rua de baixo",null,null);
-		System.out.println(server.modificaPessoa(pessoa));
+		System.out.println(server.removePessoa(pessoa));
 		server.ligacao.imprimeResultSet(server.ligacao.executaSQL("Select * from pessoa"));
 	}
 
@@ -103,14 +103,15 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 		comando += pessoa.getMorada();
 		comando += "' where NCC = ";
 		comando += pessoa.getNcc();
-		System.out.println(comando);
-		return(ligacao.executaSQL(comando))!=null;
+		
+		return(ligacao.executaUpdateSQL(comando));
 	}
 
 	@Override
 	public boolean removePessoa(Pessoa pessoa) throws RemoteException {
-		// TODO Auto-generated method stub
-		return false;
+		String comando = "DELETE FROM Pessoa WHERE NCC = "+pessoa.getNcc();
+		System.out.println(comando);
+		return (ligacao.executaUpdateSQL(comando));
 	}
 
 	@Override
