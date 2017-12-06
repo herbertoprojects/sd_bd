@@ -37,9 +37,14 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 		if(pessoa.getDep()!=null){
 			comando += "'";
 			comando += pessoa.getDep().getSigla();//departamento
-			comando += "','";
-			comando += pessoa.getDep().getFac().getSigla();//departamento->faculdade
-			comando += "','";
+			comando += "',";
+			if(pessoa.getDep().getFac()!=null){
+				comando += "'";
+				comando += pessoa.getDep().getFac().getSigla();//departamento->faculdade
+				comando += "','";
+			}else{
+				comando += "null,'";
+			}
 		}else{
 			comando += "null,null,'";
 		}
@@ -61,7 +66,35 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 	@Override
 	public boolean modificaPessoa(Pessoa pessoa) throws RemoteException {
 		// TODO Auto-generated method stub
-		return false;
+		
+		String comando = "UPDATE Pessoa SET ";
+		if(pessoa.getFac()!=null){
+			comando += "Faculdade = '";
+			comando += pessoa.getFac().getSigla();
+			comando += "',";
+		}else{
+			comando += "Faculdade = null,";
+		}
+		if(pessoa.getDep()!=null){
+			comando += "DepartamentoNome= '"
+			comando += pessoa.getDep().getSigla();
+			comando += "', DepartamentoFaculdadesigla = '"
+		}
+		
+		
+		return(ligacao.executaSQL(comando))!=null;
+		
+		UPDATE Pessoa SET 
+		  Faculdade = ?, 
+		  DepartamentoNome = ?, 
+		  DepartamentoFaculdadesigla = ?, 
+		  tipo = ?, 
+		  Nome = ?, 
+		  senha = ?, 
+		  telefone = ?, 
+		  morada = ? 
+		WHERE
+		  NCC = ?;
 	}
 
 	@Override
