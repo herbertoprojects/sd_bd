@@ -40,7 +40,8 @@ public class LigacaoBD {
 				System.out.println("Comando Invalido, ou conflito!");
 				return null;
 			}
-			return stm.executeQuery(comando);			
+			ResultSet resultado = stm.executeQuery(comando);
+			return resultado;			
 		}
 		catch(SQLException e){
 			if(num<5){
@@ -49,6 +50,30 @@ public class LigacaoBD {
 			}
 			System.out.println("Sem liagacao com a base de dados, ou conflito de comando!");
 			return null;
+		}
+	}
+	public boolean executaUpdateSQL(String comando){return executaUpdateSQL(comando,0);}
+	public boolean executaUpdateSQL(String comando, int num){
+		try{
+			Statement stm;
+			if((stm = conn.createStatement())==null){
+				if(num<5){
+					this.conectaBD();
+					return (executaUpdateSQL(comando,num+1));
+				}
+				System.out.println("Comando Invalido, ou conflito!");
+				return false;
+			}
+			boolean resultado = stm.executeUpdate(comando)!=0;
+			return resultado;
+		}
+		catch(SQLException e){
+			if(num<5){
+				this.conectaBD();
+				return (executaUpdateSQL(comando,num+1));
+			}
+			System.out.println("Sem liagacao com a base de dados, ou conflito de comando!");
+			return false;
 		}
 	}
 	

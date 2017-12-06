@@ -6,6 +6,11 @@ import java.util.ArrayList;
 
 public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	LigacaoBD ligacao;
 
 	protected ServidorRMI() throws RemoteException {
@@ -16,9 +21,7 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 	public static void main(String[] args) throws RemoteException {
 		// TODO Auto-generated method stub
 		ServidorRMI server = new ServidorRMI();
-		Pessoa pessoa = new Pessoa(12121280,"Francisco Simoes","Funcionario","12345",910123123,"Rua de baixo",null,null);
-		System.out.println(server.registaPessoa(pessoa));
-		server.ligacao.imprimeResultSet(server.ligacao.executaSQL("Select * from pessoa"));
+	
 	}
 
 	@Override
@@ -58,7 +61,6 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 		comando += "','";
 		comando += pessoa.getMorada();//morada
 		comando += "')";
-		
 		return(ligacao.executaSQL(comando))!=null;
 
 	}
@@ -75,32 +77,43 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 		}else{
 			comando += "Faculdade = null,";
 		}
+		
 		if(pessoa.getDep()!=null){
-			comando += "DepartamentoNome= '"
+			comando += "DepartamentoNome= '";
 			comando += pessoa.getDep().getSigla();
-			comando += "', DepartamentoFaculdadesigla = '"
+			comando += "',";
+			if(pessoa.getDep().getFac()!=null){
+				comando += "DepartamentoFaculdadesigla = '";
+				comando += pessoa.getDep().getFac().getSigla();
+				comando += "',";
+			}else{
+				comando += "DepartamentoFaculdadesigla = null,";
+			}
+			
+		}else{
+			comando += "DepartamentoNome= null , DepartamentoFaculdadesigla = null, ";
 		}
+		comando += "tipo = '";
+		comando += pessoa.getCargo();
+		comando += "', Nome = '";
+		comando += pessoa.getNome();
+		comando += "', senha= '";
+		comando += pessoa.getSenha();
+		comando += "', telefone = ";
+		comando += pessoa.getTelefone();
+		comando += ", morada = '";
+		comando += pessoa.getMorada();
+		comando += "' where NCC = ";
+		comando += pessoa.getNcc();
 		
-		
-		return(ligacao.executaSQL(comando))!=null;
-		
-		UPDATE Pessoa SET 
-		  Faculdade = ?, 
-		  DepartamentoNome = ?, 
-		  DepartamentoFaculdadesigla = ?, 
-		  tipo = ?, 
-		  Nome = ?, 
-		  senha = ?, 
-		  telefone = ?, 
-		  morada = ? 
-		WHERE
-		  NCC = ?;
+		return(ligacao.executaUpdateSQL(comando));
 	}
 
 	@Override
 	public boolean removePessoa(Pessoa pessoa) throws RemoteException {
-		// TODO Auto-generated method stub
-		return false;
+		String comando = "DELETE FROM Pessoa WHERE NCC = "+pessoa.getNcc();
+		System.out.println(comando);
+		return (ligacao.executaUpdateSQL(comando));
 	}
 
 	@Override
