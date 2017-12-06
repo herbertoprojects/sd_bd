@@ -7,6 +7,7 @@ public class Lista extends Candidatos {
 	public Lista() {
 		// TODO Auto-generated constructor stub
 		super();
+		super.setTipo("Lista");
 	}
 	public ArrayList<Pessoa> getLista_pessoas() {
 		return lista_pessoas;

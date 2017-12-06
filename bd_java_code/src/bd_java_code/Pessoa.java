@@ -11,8 +11,16 @@ public class Pessoa {
 	private Faculdade fac;
 	private Departamento dep;
 	
-	public Pessoa() {
-		// TODO Auto-generated constructor stub
+	public Pessoa(int ncc,String nome,String cargo,String senha,int telefone,String morada,Departamento dep,Faculdade fac){
+		
+		this.nome = nome;
+		this.ncc = ncc;
+		this.cargo = cargo;
+		this.senha = senha;
+		this.telefone = telefone;
+		this.morada = morada;
+		this.fac = fac;
+		this.dep = dep;
 	}
 	public String getCargo() {
 		return cargo;

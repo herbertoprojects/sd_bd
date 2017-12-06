@@ -6,6 +6,7 @@ public class CandidatoIndividual extends Candidatos {
 	public CandidatoIndividual() {
 		// TODO Auto-generated constructor stub
 		super();
+		super.setTipo("Individual");
 	}
 	public Pessoa getPessoa() {
 		return pessoa;
