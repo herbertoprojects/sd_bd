@@ -16,8 +16,6 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 	public static void main(String[] args) throws RemoteException {
 		// TODO Auto-generated method stub
 		ServidorRMI server = new ServidorRMI();
-		Pessoa pessoa = new Pessoa(12121280,"Francisco Simoes","Funcionario","123456",910123123,"Rua de baixo",null,null);
-		System.out.println(server.removePessoa(pessoa));
 		server.ligacao.imprimeResultSet(server.ligacao.executaSQL("Select * from pessoa"));
 	}
 
