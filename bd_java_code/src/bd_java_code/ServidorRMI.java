@@ -16,8 +16,8 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 	public static void main(String[] args) throws RemoteException {
 		// TODO Auto-generated method stub
 		ServidorRMI server = new ServidorRMI();
-		Pessoa pessoa = new Pessoa(12121280,"Francisco Simoes","Funcionario","12345",910123123,"Rua de baixo",null,null);
-		System.out.println(server.registaPessoa(pessoa));
+		Pessoa pessoa = new Pessoa(12121280,"Francisco Simoes","Funcionario","123456",910123123,"Rua de baixo",null,null);
+		System.out.println(server.modificaPessoa(pessoa));
 		server.ligacao.imprimeResultSet(server.ligacao.executaSQL("Select * from pessoa"));
 	}
 
@@ -75,26 +75,36 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 		}else{
 			comando += "Faculdade = null,";
 		}
+		
 		if(pessoa.getDep()!=null){
-			comando += "DepartamentoNome= '"
+			comando += "DepartamentoNome= '";
 			comando += pessoa.getDep().getSigla();
-			comando += "', DepartamentoFaculdadesigla = '"
+			comando += "',";
+			if(pessoa.getDep().getFac()!=null){
+				comando += "DepartamentoFaculdadesigla = '";
+				comando += pessoa.getDep().getFac().getSigla();
+				comando += "',";
+			}else{
+				comando += "DepartamentoFaculdadesigla = null,";
+			}
+			
+		}else{
+			comando += "DepartamentoNome= null , DepartamentoFaculdadesigla = null, ";
 		}
-		
-		
+		comando += "tipo = '";
+		comando += pessoa.getCargo();
+		comando += "', Nome = '";
+		comando += pessoa.getNome();
+		comando += "', senha= '";
+		comando += pessoa.getSenha();
+		comando += "', telefone = ";
+		comando += pessoa.getTelefone();
+		comando += ", morada = '";
+		comando += pessoa.getMorada();
+		comando += "' where NCC = ";
+		comando += pessoa.getNcc();
+		System.out.println(comando);
 		return(ligacao.executaSQL(comando))!=null;
-		
-		UPDATE Pessoa SET 
-		  Faculdade = ?, 
-		  DepartamentoNome = ?, 
-		  DepartamentoFaculdadesigla = ?, 
-		  tipo = ?, 
-		  Nome = ?, 
-		  senha = ?, 
-		  telefone = ?, 
-		  morada = ? 
-		WHERE
-		  NCC = ?;
 	}
 
 	@Override
