@@ -6,6 +6,11 @@ import java.util.ArrayList;
 
 public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	LigacaoBD ligacao;
 
 	protected ServidorRMI() throws RemoteException {
@@ -16,7 +21,7 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 	public static void main(String[] args) throws RemoteException {
 		// TODO Auto-generated method stub
 		ServidorRMI server = new ServidorRMI();
-		server.ligacao.imprimeResultSet(server.ligacao.executaSQL("Select * from pessoa"));
+	
 	}
 
 	@Override
@@ -56,7 +61,6 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 		comando += "','";
 		comando += pessoa.getMorada();//morada
 		comando += "')";
-		
 		return(ligacao.executaSQL(comando))!=null;
 
 	}
@@ -107,7 +111,7 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 
 	@Override
 	public boolean removePessoa(Pessoa pessoa) throws RemoteException {
-		String comando = "DELETE FROM Pessoa WHERE NCC = ("+pessoa.getNcc()+")";
+		String comando = "DELETE FROM Pessoa WHERE NCC = "+pessoa.getNcc();
 		System.out.println(comando);
 		return (ligacao.executaUpdateSQL(comando));
 	}

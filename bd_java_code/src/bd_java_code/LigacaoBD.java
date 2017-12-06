@@ -32,7 +32,6 @@ public class LigacaoBD {
 	public ResultSet executaSQL(String comando, int num){
 		try{
 			Statement stm;
-			conn.setAutoCommit(false);
 			if((stm = conn.createStatement())==null){
 				if(num<5){
 					this.conectaBD();
@@ -42,8 +41,6 @@ public class LigacaoBD {
 				return null;
 			}
 			ResultSet resultado = stm.executeQuery(comando);
-			conn.commit();
-			stm.close();
 			return resultado;			
 		}
 		catch(SQLException e){
@@ -59,7 +56,6 @@ public class LigacaoBD {
 	public boolean executaUpdateSQL(String comando, int num){
 		try{
 			Statement stm;
-			conn.setAutoCommit(false);
 			if((stm = conn.createStatement())==null){
 				if(num<5){
 					this.conectaBD();
@@ -69,8 +65,6 @@ public class LigacaoBD {
 				return false;
 			}
 			boolean resultado = stm.executeUpdate(comando)!=0;
-			stm.close();
-			conn.commit();
 			return resultado;
 		}
 		catch(SQLException e){
