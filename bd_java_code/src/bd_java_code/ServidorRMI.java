@@ -172,11 +172,25 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 
 	@Override
 	public ArrayList<Faculdade> ListFaculdades() throws RemoteException {
-		// TODO Auto-generated method stub
 		String comando = "Select * from faculdade";
 		ResultSet res = ligacao.executaSQL(comando);
-		
-		return null;
+		if(res==null){return null;}
+		try{
+			ArrayList<Faculdade> listaFaculdades = new ArrayList<Faculdade>();
+			Faculdade facTemp;
+			while(res.next()){
+				facTemp = new Faculdade();
+				facTemp.setSigla(res.getString(1));
+				facTemp.setNome(res.getString(2));
+				listaFaculdades.add(facTemp);
+			}
+			res.close();
+			return listaFaculdades;
+			
+		}catch(SQLException e){
+			try{res.close();}catch(Exception e1){}
+			return null;
+		}
 	}
 
 	@Override
