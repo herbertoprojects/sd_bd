@@ -8,6 +8,7 @@ public class LigacaoBD {
 	private String baseDadosURL;
 	private String baseDadosUser;
 	private String baseDadosPassword;
+	boolean debug_opc = true;
 	
 	public LigacaoBD() {
 		// TODO Auto-generated constructor stub
@@ -16,6 +17,12 @@ public class LigacaoBD {
 		baseDadosUser = "proj";
 		
 		System.out.println(conectaBD());//Serve para conectar a base de dados
+	}
+	
+	public void debug(String texto){
+		if(debug_opc){
+			System.out.println(texto);
+		}
 	}
 	
 	public boolean conectaBD (){
@@ -30,6 +37,7 @@ public class LigacaoBD {
 	
 	public ResultSet executaSQL(String comando){return executaSQL(comando,0);}
 	public ResultSet executaSQL(String comando, int num){
+		debug(comando);
 		try{
 			Statement stm;
 			if((stm = conn.createStatement())==null){
@@ -54,6 +62,7 @@ public class LigacaoBD {
 	}
 	public boolean executaUpdateSQL(String comando){return executaUpdateSQL(comando,0);}
 	public boolean executaUpdateSQL(String comando, int num){
+		debug(comando);
 		try{
 			Statement stm;
 			if((stm = conn.createStatement())==null){
@@ -65,6 +74,7 @@ public class LigacaoBD {
 				return false;
 			}
 			boolean resultado = stm.executeUpdate(comando)!=0;
+			stm.close();
 			return resultado;
 		}
 		catch(SQLException e){
@@ -94,6 +104,7 @@ public class LigacaoBD {
 	            }
 	            System.out.println("");
 	        }
+	        res.close();
 		}catch (SQLException e){
 			System.out.println("Sem resultados");
 			return;

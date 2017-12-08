@@ -2,6 +2,8 @@ package bd_java_code;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
@@ -21,9 +23,9 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 	public static void main(String[] args) throws RemoteException {
 		// TODO Auto-generated method stub
 		ServidorRMI server = new ServidorRMI();
-	
+		
 	}
-
+	
 	@Override
 	public boolean registaPessoa(Pessoa pessoa) throws RemoteException {
 		
@@ -61,13 +63,13 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 		comando += "','";
 		comando += pessoa.getMorada();//morada
 		comando += "')";
-		return(ligacao.executaSQL(comando))!=null;
+		System.out.println(comando);
+		return ligacao.executaUpdateSQL(comando);
 
 	}
 
 	@Override
 	public boolean modificaPessoa(Pessoa pessoa) throws RemoteException {
-		// TODO Auto-generated method stub
 		
 		String comando = "UPDATE Pessoa SET ";
 		if(pessoa.getFac()!=null){
@@ -112,8 +114,37 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 	@Override
 	public boolean removePessoa(Pessoa pessoa) throws RemoteException {
 		String comando = "DELETE FROM Pessoa WHERE NCC = "+pessoa.getNcc();
-		System.out.println(comando);
 		return (ligacao.executaUpdateSQL(comando));
+	}
+	
+	@Override
+	public Pessoa procuraPessoa(int ncc)throws RemoteException{
+		String comando = "select * from pessoa where ncc = "+ncc;
+		ResultSet res = ligacao.executaSQL(comando);
+		if(res==null){return null;}
+		try{
+			if (res.next()) {
+	            Pessoa pessoa = new Pessoa();
+	            pessoa.setNcc(ncc);
+	            pessoa.setFac(procuraFaculdade(res.getString(2)));
+	            pessoa.setDep(procuraDepartamento(res.getString(3)));
+	            pessoa.setCargo(res.getString(5));
+	            pessoa.setNome(res.getString(6));
+	            pessoa.setSenha(res.getString(7));
+	            pessoa.setTelefone(res.getInt(8));
+	            pessoa.setMorada(res.getString(9));
+	            
+	            res.close();
+	            return pessoa;
+	        }else{
+	        	res.close();
+	        	return null;
+	        }
+			
+		}catch(SQLException e){
+			try{res.close();}catch(Exception e1){}
+			return null;
+		}
 	}
 
 	@Override
@@ -133,10 +164,18 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	@Override
+	public Departamento procuraDepartamento(String sigla) throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	@Override
 	public ArrayList<Faculdade> ListFaculdades() throws RemoteException {
 		// TODO Auto-generated method stub
+		String comando = "Select * from faculdade";
+		ResultSet res = ligacao.executaSQL(comando);
+		
 		return null;
 	}
 
@@ -150,6 +189,11 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 	public boolean removeFaculdade(Faculdade fac) throws RemoteException {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	@Override
+	public Faculdade procuraFaculdade(String sigla) throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override

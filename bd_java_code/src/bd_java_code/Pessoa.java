@@ -11,6 +11,10 @@ public class Pessoa {
 	private Faculdade fac;
 	private Departamento dep;
 	
+	public Pessoa(){
+		
+	}
+	
 	public Pessoa(int ncc,String nome,String cargo,String senha,int telefone,String morada,Departamento dep,Faculdade fac){
 		
 		this.nome = nome;
