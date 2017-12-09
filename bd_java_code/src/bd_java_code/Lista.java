@@ -3,15 +3,20 @@ package bd_java_code;
 import java.util.ArrayList;
 
 public class Lista extends Candidatos {
-	private ArrayList <Pessoa> lista_pessoas;
+	private ArrayList <PessoaLista> lista_pessoas;
+	private String nome;
 	public Lista() {
 		// TODO Auto-generated constructor stub
 		super();
 		super.setTipo("Lista");
 	}
-	public ArrayList<Pessoa> getLista_pessoas() {
+	public ArrayList<PessoaLista> getLista_pessoas() {
 		return lista_pessoas;
-	}public void setLista_pessoas(ArrayList<Pessoa> lista_pessoas) {
+	}public void setLista_pessoas(ArrayList<PessoaLista> lista_pessoas) {
 		this.lista_pessoas = lista_pessoas;
+	}public String getNome() {
+		return nome;
+	}public void setNome(String nome) {
+		this.nome = nome;
 	}
 }

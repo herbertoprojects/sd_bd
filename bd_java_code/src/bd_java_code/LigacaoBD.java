@@ -79,7 +79,7 @@ public class LigacaoBD {
 			stm.close();
 			return resultado;
 		}
-		catch(SQLException e){
+		catch(SQLException|NullPointerException e){
 			if(num<5){
 				this.conectaBD();
 				return (executaUpdateSQL(comando,num+1));
@@ -110,6 +110,62 @@ public class LigacaoBD {
 		}catch (SQLException e){
 			System.out.println("Sem resultados");
 			return;
+		}
+	}
+	
+	public boolean inicioTransacao(){
+		try {
+			this.conn.setAutoCommit(false);
+			return true;
+		} catch (SQLException e) {
+			if(this.conectaBD()){
+				try {
+					this.conn.setAutoCommit(false);
+					return true;
+				} catch (SQLException e1) {
+					return false;
+				}
+			}else{
+				return false;
+			}
+		}
+	}
+	public boolean fimTransacao(){
+		try {
+			this.conn.commit();
+			this.conn.setAutoCommit(true);
+			return true;
+		} catch (SQLException e) {
+			if(this.conectaBD()){
+				try {
+					this.conn.commit();
+					this.conn.setAutoCommit(true);
+					return true;
+				} catch (SQLException e1) {
+					return false;
+				}
+			}else{
+				return false;
+			}
+		}
+	}
+	public boolean voltarTransacao(){
+		try {
+			this.conn.rollback();
+			this.conn.setAutoCommit(true);
+			return true;
+		} catch (SQLException e) {
+			if(this.conectaBD()){
+				try {
+					this.conn.rollback();
+					this.conn.setAutoCommit(true);
+					return true;
+				} catch (SQLException e1) {
+					return false;
+				}
+			}else{
+				return false;
+			}
 		}
 	}
 }

@@ -13,6 +13,7 @@ public class Eleicao {
 	private Departamento dep;
 	private Faculdade fac;
 	private ArrayList<Candidatos> candidatos;
+	private ArrayList<MesaVoto> mesaVoto;
 	
 	public Eleicao() {
 		// TODO Auto-generated constructor stub
@@ -39,8 +40,8 @@ public class Eleicao {
 		this.descricao = descricao;
 	}public void setId(int id) {
 		this.id = id;
-	}public void setnVotoBNA(int nVotoBNA) {
-		this.nVotoBNA = nVotoBNA;
+	}public void setnVotoBNA(int voto) {
+		this.nVotoBNA = voto;
 	}public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}public void setTitulo(String titulo) {
@@ -57,5 +58,9 @@ public class Eleicao {
 		return candidatos;
 	}public void setCandidatos(ArrayList<Candidatos> candidatos) {
 		this.candidatos = candidatos;
+	}public ArrayList<MesaVoto> getMesaVoto() {
+		return mesaVoto;
+	}public void setMesaVoto(ArrayList<MesaVoto> mesaVoto) {
+		this.mesaVoto = mesaVoto;
 	}
 }
