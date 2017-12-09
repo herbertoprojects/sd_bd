@@ -23,16 +23,19 @@ public interface RMI_1 extends Remote{
 	public boolean novaEleicao(Eleicao eleicao) throws RemoteException;
 	public boolean removerEleicao(Eleicao eleicao) throws RemoteException;
 	public ArrayList <Eleicao> listaEleicao() throws RemoteException;
-	public ArrayList <Eleicao> listaEleicao(String inicio, String fim) throws RemoteException;
 	
 	
-	public boolean addCandidato(Candidatos candidato) throws RemoteException;
-	public boolean removeCandidato(Candidatos candidato) throws RemoteException;
+	public boolean addCandidato(Candidatos candidato, Eleicao eleicao) throws RemoteException;
+	public boolean removeCandidato(Candidatos candidato, Eleicao eleicao) throws RemoteException;
 	public ArrayList<Candidatos>listaCandidatos(Eleicao eleicao) throws RemoteException;
 
-	public boolean addMesaVoto(MesaVoto mesaVoto) throws RemoteException;
-	public boolean removeMesaVoto(MesaVoto mesaVoto) throws RemoteException;
-	public ArrayList <MesaVoto> listMesaVoto(Eleicao eleicao) throws RemoteException;
+	public boolean addMesaVoto(MesaVoto mesaVoto, Eleicao eleicao, Departamento dep) throws RemoteException;
+	public boolean removeMesaVoto(MesaVoto mesaVoto, Eleicao eleicao, Departamento dep) throws RemoteException;
+	public ArrayList <MesaVoto> listMesaVoto(Eleicao eleicao,Departamento dep) throws RemoteException;
+	
+	public boolean addPessoaLista(PessoaLista pessoaLista,Lista lista) throws RemoteException;
+	public boolean removePessoaLista(PessoaLista pessoaLista,Lista lista) throws RemoteException;
+	public ArrayList <PessoaLista> listaPessoaLista(Lista lista) throws RemoteException;
 	
 	
 	//Ainda não estao modificadas, ainda para pensar
