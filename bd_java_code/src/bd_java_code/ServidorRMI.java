@@ -2,6 +2,8 @@ package bd_java_code;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
@@ -16,14 +18,23 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 	protected ServidorRMI() throws RemoteException {
 		super();
 		ligacao = new LigacaoBD();
+		
+		Eleicao eleicao = new Eleicao();
+		eleicao.setTitulo("teste");
+		eleicao.setDescricao("teste v2");
+		eleicao.setDataInicio("2017:12:09 01:59");
+		eleicao.setDataFim("2017:12:12 01:48");
+		eleicao.setnVotoBNA(10);
+		eleicao.setTipo("nucleo");
+		
+		this.novaEleicao(eleicao);
 	}
 
 	public static void main(String[] args) throws RemoteException {
 		// TODO Auto-generated method stub
 		ServidorRMI server = new ServidorRMI();
-	
 	}
-
+	
 	@Override
 	public boolean registaPessoa(Pessoa pessoa) throws RemoteException {
 		
@@ -61,13 +72,12 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 		comando += "','";
 		comando += pessoa.getMorada();//morada
 		comando += "')";
-		return(ligacao.executaSQL(comando))!=null;
+		return ligacao.executaUpdateSQL(comando);
 
 	}
 
 	@Override
 	public boolean modificaPessoa(Pessoa pessoa) throws RemoteException {
-		// TODO Auto-generated method stub
 		
 		String comando = "UPDATE Pessoa SET ";
 		if(pessoa.getFac()!=null){
@@ -112,56 +122,193 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 	@Override
 	public boolean removePessoa(Pessoa pessoa) throws RemoteException {
 		String comando = "DELETE FROM Pessoa WHERE NCC = "+pessoa.getNcc();
-		System.out.println(comando);
 		return (ligacao.executaUpdateSQL(comando));
+	}
+	
+	@Override
+	public Pessoa procuraPessoa(int ncc)throws RemoteException{
+		String comando = "select * from pessoa where ncc = "+ncc;
+		ResultSet res = ligacao.executaSQL(comando);
+		if(res==null){return null;}
+		try{
+			if (res.next()) {
+	            Pessoa pessoa = new Pessoa();
+	            pessoa.setNcc(ncc);
+	            pessoa.setFac(procuraFaculdade(res.getString(2)));
+	            pessoa.setDep(procuraDepartamento(res.getString(3),res.getString(4)));
+	            pessoa.setCargo(res.getString(5));
+	            pessoa.setNome(res.getString(6));
+	            pessoa.setSenha(res.getString(7));
+	            pessoa.setTelefone(res.getInt(8));
+	            pessoa.setMorada(res.getString(9));
+	            
+	            res.close();
+	            return pessoa;
+	        }else{
+	        	res.close();
+	        	return null;
+	        }
+			
+		}catch(SQLException e){
+			try{res.close();}catch(Exception e1){}
+			return null;
+		}
 	}
 
 	@Override
 	public ArrayList<Departamento> ListDepartamentos(Faculdade faculdade) throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+		String comando;
+		if(faculdade==null){
+			comando = "Select * from departamento";
+		}else{
+			comando = "Select * from departamento where FAC = '"+faculdade.getSigla()+"'";
+		}
+		
+		ResultSet res = ligacao.executaSQL(comando);
+		if(res==null){return null;}
+		try{
+			ArrayList<Departamento> listaDepartamentos = new ArrayList<Departamento>();
+			Departamento depTemp;
+			while(res.next()){
+				System.out.println(res.getString(1));
+				depTemp = new Departamento();
+				depTemp.setSigla(res.getString(1));
+				depTemp.setFac(procuraFaculdade(res.getString(2)));
+				depTemp.setNome(res.getString(3));
+				listaDepartamentos.add(depTemp);
+			}
+			res.close();
+			return listaDepartamentos;
+			
+		}catch(SQLException e){
+			try{res.close();}catch(Exception e1){}
+			return null;
+		}
 	}
 
 	@Override
 	public boolean addDepartamento(Departamento dep) throws RemoteException {
-		// TODO Auto-generated method stub
-		return false;
+		String comando = "INSERT INTO departamento values ('";
+		comando += dep.getSigla();
+		comando += "','";
+		comando += dep.getFac().getSigla();
+		comando += "','";
+		comando += dep.getNome();
+		comando += "')";
+		return ligacao.executaUpdateSQL(comando);
 	}
 
 	@Override
 	public boolean removeDepartamento(Departamento dep) throws RemoteException {
-		// TODO Auto-generated method stub
-		return false;
+		String comando = "DELETE FROM Departamento WHERE sigla = '"+dep.getSigla()+"'";
+		return ligacao.executaUpdateSQL(comando);
+	}
+	@Override
+	public Departamento procuraDepartamento(String siglaDep, String siglaFac) throws RemoteException {
+		String comando = "Select * from departamento where sigla = '"+siglaDep+"' and fac = '"+siglaFac+"'";
+		ResultSet res = ligacao.executaSQL(comando);
+		if(res==null){return null;}
+		try{
+			if(res.next()){
+				Departamento dep = new Departamento();
+				dep.setSigla(res.getString(1));
+				dep.setFac(procuraFaculdade(res.getString(2)));
+				dep.setNome(res.getString(3));
+				res.close();
+				return dep;
+			}else{
+				res.close();
+				return null;
+			}
+		}catch(SQLException e){
+			try{res.close();}catch(Exception e1){}
+			return null;
+		}
 	}
 
 	@Override
 	public ArrayList<Faculdade> ListFaculdades() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+		String comando = "Select * from faculdade";
+		ResultSet res = ligacao.executaSQL(comando);
+		if(res==null){return null;}
+		try{
+			ArrayList<Faculdade> listaFaculdades = new ArrayList<Faculdade>();
+			Faculdade facTemp;
+			while(res.next()){
+				facTemp = new Faculdade();
+				facTemp.setSigla(res.getString(1));
+				facTemp.setNome(res.getString(2));
+				listaFaculdades.add(facTemp);
+			}
+			res.close();
+			return listaFaculdades;
+			
+		}catch(SQLException e){
+			try{res.close();}catch(Exception e1){}
+			return null;
+		}
 	}
 
 	@Override
 	public boolean addFaculdade(Faculdade fac) throws RemoteException {
-		// TODO Auto-generated method stub
-		return false;
+		String comando = "INSERT INTO faculdade values ('";
+		comando += fac.getSigla();
+		comando += "','";
+		comando += fac.getNome();
+		comando += "')";
+		return ligacao.executaUpdateSQL(comando);
 	}
 
 	@Override
 	public boolean removeFaculdade(Faculdade fac) throws RemoteException {
-		// TODO Auto-generated method stub
-		return false;
+		String comando = "DELETE FROM Faculdade WHERE sigla = '"+fac.getSigla()+"'";
+		return ligacao.executaUpdateSQL(comando);
+	}
+	@Override
+	public Faculdade procuraFaculdade(String sigla) throws RemoteException {
+		String comando = "Select * from faculdade where sigla = '"+sigla+"'";
+		ResultSet res = ligacao.executaSQL(comando);
+		if(res==null){return null;}
+		try{
+			if(res.next()){
+				Faculdade fac = new Faculdade();
+				fac.setSigla(res.getString(1));
+				fac.setNome(res.getString(2));
+				res.close();
+				return fac;
+			}else{
+				res.close();
+				return null;
+			}
+		}catch(SQLException e){
+			try{res.close();}catch(Exception e1){}
+			return null;
+		}
 	}
 
 	@Override
 	public boolean novaEleicao(Eleicao eleicao) throws RemoteException {
-		// TODO Auto-generated method stub
-		return false;
+		String comando = "INSERT INTO Eleicao VALUES (SEQ_ELEICAO.NEXTVAL,'";
+		comando += eleicao.getTipo();
+		comando += "', TO_TIMESTAMP ('";
+		comando += eleicao.getDataInicio();
+		comando += "','yyyy:mm:dd hh:mi'),TO_TIMESTAMP ('";
+		comando += eleicao.getDataFim();
+		comando += "','yyyy:mm:dd hh:mi'),'";
+		comando += eleicao.getTitulo();
+		comando += "','";
+		comando += eleicao.getDescricao();
+		comando += "',";
+		comando += eleicao.getnVotoBNA();
+		comando += ")";
+		return ligacao.executaUpdateSQL(comando);
+
 	}
 
 	@Override
 	public boolean removerEleicao(Eleicao eleicao) throws RemoteException {
-		// TODO Auto-generated method stub
-		return false;
+		String comando = "Delete from eleicao where id = " + eleicao.getId();	
+		return ligacao.executaUpdateSQL(comando);
 	}
 
 	@Override
@@ -244,12 +391,6 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 			int id_lista_voto) throws RemoteException {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	public ArrayList<String> ListDepartamentos(String faculdadeTemp) throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

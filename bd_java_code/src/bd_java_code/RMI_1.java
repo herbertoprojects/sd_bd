@@ -7,14 +7,17 @@ public interface RMI_1 extends Remote{
 	public boolean registaPessoa(Pessoa pessoa) throws RemoteException;
 	public boolean modificaPessoa(Pessoa pessoa) throws RemoteException;
 	public boolean removePessoa(Pessoa pessoa) throws RemoteException;
+	public Pessoa procuraPessoa(int ncc)throws RemoteException;
 	
 	public ArrayList <Departamento> ListDepartamentos(Faculdade faculdade) throws RemoteException;
 	public boolean addDepartamento(Departamento dep)throws RemoteException;
 	public boolean removeDepartamento(Departamento dep)throws RemoteException;
+	public Departamento procuraDepartamento(String siglaDep, String siglaFac) throws RemoteException;
 	
 	public ArrayList <Faculdade> ListFaculdades() throws RemoteException;
 	public boolean addFaculdade(Faculdade fac)throws RemoteException;
 	public boolean removeFaculdade(Faculdade fac)throws RemoteException;
+	public Faculdade procuraFaculdade(String sigla)throws RemoteException;
 	
 	
 	public boolean novaEleicao(Eleicao eleicao) throws RemoteException;
@@ -38,6 +41,5 @@ public interface RMI_1 extends Remote{
 	public boolean desbloquearVoto(String nomeMesaVoto, String passwordMesaVoto, int nCC, int id_elect) throws RemoteException;
 	public boolean bloquearVoto(String nomeMesaVoto,String passwordMesaVoto, int nCC, int id_elect) throws RemoteException;
 	public boolean votar(String nomeMesaVoto, String passwordMesaVoto, int nCC, String passwordUser, int id_elei, int id_lista_voto) throws RemoteException;
-	public ArrayList<String> ListDepartamentos(String faculdadeTemp) throws RemoteException;
 	 
 }
