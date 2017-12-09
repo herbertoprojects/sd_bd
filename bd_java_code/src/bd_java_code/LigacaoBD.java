@@ -16,7 +16,9 @@ public class LigacaoBD {
 		baseDadosPassword = "proj";
 		baseDadosUser = "proj";
 		
-		System.out.println(conectaBD());//Serve para conectar a base de dados
+		if(conectaBD()){//Serve para conectar a base de dados
+			System.out.println("Ligado ao servidor: "+baseDadosURL);
+		}
 	}
 	
 	public void debug(String texto){
