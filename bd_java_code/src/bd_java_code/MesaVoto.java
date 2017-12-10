@@ -1,8 +1,9 @@
 package bd_java_code;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class MesaVoto {
+public class MesaVoto implements Serializable {
 	private String username;
 	private String password;
 	private Departamento dep;

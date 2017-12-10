@@ -1,6 +1,13 @@
 package bd_java_code;
 
-public class Faculdade {
+import java.io.Serializable;
+
+public class Faculdade implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String sigla;
 	private String nome;
 	

@@ -23,14 +23,17 @@ public interface RMI_1 extends Remote{
 	public boolean novaEleicao(Eleicao eleicao) throws RemoteException;
 	public boolean removerEleicao(Eleicao eleicao) throws RemoteException;
 	public ArrayList <Eleicao> listaEleicao() throws RemoteException;
+	public Eleicao procuraEleicao(int id) throws RemoteException;
 	
 	
 	public boolean addCandidato(Candidatos candidato, Eleicao eleicao) throws RemoteException;
 	public boolean removeCandidato(Candidatos candidato, Eleicao eleicao) throws RemoteException;
 	public ArrayList<Candidatos>listaCandidatos(Eleicao eleicao) throws RemoteException;
+	public Lista procuraLista(Eleicao eleicao,int candidato) throws RemoteException;
+	public CandidatoIndividual procuraIndividual(Eleicao eleicao, int candidato) throws RemoteException;
 
-	public boolean addMesaVoto(MesaVoto mesaVoto, Eleicao eleicao, Departamento dep) throws RemoteException;
-	public boolean removeMesaVoto(MesaVoto mesaVoto, Eleicao eleicao, Departamento dep) throws RemoteException;
+	public boolean addMesaVoto(MesaVoto mesaVoto) throws RemoteException;
+	public boolean removeMesaVoto(MesaVoto mesaVoto) throws RemoteException;
 	public ArrayList <MesaVoto> listMesaVoto(Eleicao eleicao,Departamento dep) throws RemoteException;
 	
 	public boolean addPessoaLista(PessoaLista pessoaLista,Lista lista) throws RemoteException;

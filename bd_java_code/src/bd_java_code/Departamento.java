@@ -1,6 +1,13 @@
 package bd_java_code;
 
-public class Departamento {
+import java.io.Serializable;
+
+public class Departamento implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String sigla;
 	private String nome;
 	private Faculdade fac;

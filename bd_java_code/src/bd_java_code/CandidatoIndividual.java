@@ -1,6 +1,12 @@
 package bd_java_code;
 
-public class CandidatoIndividual extends Candidatos {
+import java.io.Serializable;
+
+public class CandidatoIndividual extends Candidatos implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Pessoa pessoa;
 	
 	public CandidatoIndividual() {

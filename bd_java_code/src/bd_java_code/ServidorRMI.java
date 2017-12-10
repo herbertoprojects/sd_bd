@@ -1,6 +1,9 @@
 package bd_java_code;
 
+import java.net.MalformedURLException;
+import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,6 +15,7 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private int portoConsola = 9000;
 	
 	LigacaoBD ligacao;
 
@@ -19,13 +23,23 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 		super();
 		ligacao = new LigacaoBD();
 		if(ligacao.conectaBD()){
-			System.out.println((listaEleicao()).get(0));
+			consolaRMI();
 		}
 	}
 
 	public static void main(String[] args) throws RemoteException {
 		// TODO Auto-generated method stub
 		ServidorRMI server = new ServidorRMI();
+	}
+	
+	public boolean consolaRMI(){
+		try{
+			LocateRegistry.createRegistry(portoConsola);
+			Naming.rebind("rmi://localhost:"+portoConsola+"/rmi", this);
+			return true;
+		}catch(RemoteException | MalformedURLException e){
+			return false;
+		}
 	}
 	
 	@Override
@@ -322,7 +336,8 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 				elecTemp.setTitulo(res.getString(5));
 				elecTemp.setDescricao(res.getString(6));
 				elecTemp.setnVotoBNA(res.getInt(7));;
-				// TODO completar
+				elecTemp.setCandidatos(listaCandidatos(elecTemp));
+				elecTemp.setMesaVoto(listMesaVoto(elecTemp, null));
 				listaEleicoes.add(elecTemp);
 			}
 			res.close();
@@ -332,6 +347,36 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 			try{res.close();}catch(Exception e1){}
 			return null;
 		}
+	}
+	
+	@Override
+	public Eleicao procuraEleicao(int id) throws RemoteException {
+		String comando = "SELECT ID, tipo, TO_CHAR(DataInicio,'yyyy:mm:dd hh:mi'), TO_CHAR(DataFim,'yyyy:mm:dd hh:mi'), Titulo, Descricao, nVotoBNA FROM Eleicao where id = "+id;
+		ResultSet res = ligacao.executaSQL(comando);
+		if(res==null){return null;}
+		try{
+			if(res.next()){
+				Eleicao eleicao = new Eleicao();
+				eleicao.setId(id);
+				eleicao.setTipo(res.getString(2));
+				eleicao.setDataInicio(res.getString(3));
+				eleicao.setDataFim(res.getString(4));
+				eleicao.setTitulo(res.getString(5));
+				eleicao.setDescricao(res.getString(6));
+				eleicao.setnVotoBNA(res.getInt(7));
+				eleicao.setMesaVoto(listMesaVoto(eleicao, null));
+				eleicao.setCandidatos(listaCandidatos(eleicao));
+				res.close();
+				return eleicao;
+			}else{
+				res.close();
+				return null;
+			}
+		}catch(SQLException e){
+			try{res.close();}catch(Exception e1){}
+			return null;
+		}
+
 	}
 
 	@Override
@@ -405,6 +450,38 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 
 	@Override
 	public ArrayList<Candidatos>listaCandidatos(Eleicao eleicao) throws RemoteException {
+		String comando = "Select * from CANDIDATOS where ELEICAOID = "+eleicao.getId();
+		ResultSet res = ligacao.executaSQL(comando);
+		if(res==null){return null;}
+		try{
+			if(res.next()){
+				ArrayList<Candidatos> candidatoslista = new ArrayList<Candidatos>();
+				while(res.next()){
+					if(res.getString(3).equalsIgnoreCase("Individual")){
+						candidatoslista.add(procuraIndividual(eleicao, res.getInt(1)));
+					}
+					else{
+						candidatoslista.add(procuraLista(eleicao, res.getInt(1)));
+					}
+				}
+				res.close();
+				return candidatoslista;
+			}else{
+				res.close();
+				return null;
+			}
+		}catch(SQLException e){
+			try{res.close();}catch(Exception e1){}
+			return null;
+		}
+	}
+	@Override
+	public CandidatoIndividual procuraIndividual(Eleicao eleicao, int candidato) throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Lista procuraLista(Eleicao eleicao, int candidato) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -426,32 +503,105 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 
 	@Override
 	public boolean removePessoaLista(PessoaLista pessoaLista,Lista lista) throws RemoteException {
-		// TODO Auto-generated method stub
-		return false;
+		String comando = "DELETE FROM LtemP WHERE PessoaNCC =";
+		comando += pessoaLista.getPessoa().getNcc();
+		comando += "AND Listanome = '";
+		comando += lista.getNome();
+		comando += "' AND ListaCand = ";
+		comando += lista.getId();
+		comando += " AND ListaCandEleicao =";
+		comando += lista.getEleicao().getId();
+		return ligacao.executaUpdateSQL(comando);
 	}
 
 	@Override
 	public ArrayList<PessoaLista> listaPessoaLista(Lista lista) throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+		String comando = "Select * FROM LtemP WHERE  Listanome = '";
+		comando += lista.getNome();
+		comando += "' AND ListaCand = ";
+		comando += lista.getId();
+		comando += " AND ListaCandEleicao =";
+		comando += lista.getEleicao().getId();
+		
+		ResultSet res = ligacao.executaSQL(comando);
+		if(res == null){return null;}
+		try{
+			ArrayList<PessoaLista> pessoaLista = new ArrayList<PessoaLista>();
+			PessoaLista pessoaListaTemp;
+			while(res.next()){
+				pessoaListaTemp = new PessoaLista();
+				pessoaListaTemp.setCargo(res.getString(1));
+				pessoaListaTemp.setPessoa(procuraPessoa(res.getInt(2)));
+				pessoaLista.add(pessoaListaTemp);
+			}
+			res.close();
+			return pessoaLista;
+			
+		}catch(SQLException e){
+			try{res.close();}catch(Exception e1){}
+			return null;
+		}
 	}
 
 	@Override
-	public boolean addMesaVoto(MesaVoto mesaVoto, Eleicao eleicao, Departamento dep) throws RemoteException {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean addMesaVoto(MesaVoto mesaVoto) throws RemoteException {
+		String comando = "INSERT INTO MesaVoto values(";
+		comando += mesaVoto.getEleicao().getId();
+		comando += ",'";
+		comando += mesaVoto.getDep().getSigla();
+		comando += "','";
+		comando += mesaVoto.getDep().getFac().getSigla();
+		comando += "','";
+		comando += mesaVoto.getUsername();
+		comando += "','";
+		comando += mesaVoto.getPassword();
+		comando += "')";
+		return ligacao.executaUpdateSQL(comando);
 	}
 
 	@Override
-	public boolean removeMesaVoto(MesaVoto mesaVoto, Eleicao eleicao, Departamento dep) throws RemoteException {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean removeMesaVoto(MesaVoto mesaVoto) throws RemoteException {
+		String comando = "DELETE FROM MesaVoto WHERE EleicaoID = ";
+		comando += mesaVoto.getEleicao().getId();
+		comando += "AND Dep = '";
+		comando += mesaVoto.getDep().getSigla();
+		comando += "AND DepFac = ";
+		comando += mesaVoto.getDep().getFac().getSigla();
+		return ligacao.executaUpdateSQL(comando);
 	}
 
 	@Override
 	public ArrayList <MesaVoto> listMesaVoto(Eleicao eleicao,Departamento dep) throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+		String comando = "Select * FROM MesaVoto WHERE  EleicaoID = ";
+		comando += eleicao.getId();
+		if(dep!=null){
+		comando += " AND Dep = '";
+		comando += dep.getSigla();
+		comando += "' AND DepFac ='";
+		comando += dep.getFac().getSigla();
+		comando += "'";
+		}
+		
+		ResultSet res = ligacao.executaSQL(comando);
+		if(res == null){return null;}
+		try{
+			ArrayList<MesaVoto> listaMesa = new ArrayList<MesaVoto>();
+			MesaVoto mesaTemp;
+			while(res.next()){
+				mesaTemp = new MesaVoto();
+				mesaTemp.setDep(procuraDepartamento(res.getString(2), res.getString(3)));
+				mesaTemp.setEleicao(procuraEleicao(res.getInt(1)));
+				mesaTemp.setUsername(res.getString(4));
+				mesaTemp.setPassword(res.getString(5));
+				listaMesa.add(mesaTemp);
+			}
+			res.close();
+			return listaMesa;
+			
+		}catch(SQLException e){
+			try{res.close();}catch(Exception e1){}
+			return null;
+		}
 	}
 
 	@Override

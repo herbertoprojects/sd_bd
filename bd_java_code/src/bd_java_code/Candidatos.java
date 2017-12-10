@@ -1,6 +1,12 @@
 package bd_java_code;
 
-public class Candidatos {
+import java.io.Serializable;
+
+public class Candidatos implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private Eleicao eleicao;
 	private String tipo;
