@@ -216,44 +216,141 @@ public class Consola extends UnicastRemoteObject {
 		while(true) {
 			System.out.println("------------Sub Menu das Eleições------------");
 			
-			System.out.println("1- Criar eleição");
-			System.out.println("2- Remover eleições");
-			System.out.println("3- Consultar eleições");
-			System.out.println("4- Adicionar listas");
-			System.out.println("5- Remover listas");
-			System.out.println("6- Consultar listas");
-			System.out.println("7- Adicionar mesa de voto");
-			System.out.println("8- remover mesa de voto");
-			System.out.println("9- Consultar mesas de voto");
-			System.out.println("0- Sair");
+			System.out.println(" 1- Criar eleição");
+			System.out.println(" 2- Remover eleições");
+			System.out.println(" 3- Consultar eleições");
+			System.out.println(" 4- Adicionar listas");
+			System.out.println(" 5- Adicionar Candidato Individual");
+			System.out.println(" 6- Remover Candidatos");
+			System.out.println(" 7- Consultar Candidatos");
+			System.out.println(" 8- Adicionar mesa de voto");
+			System.out.println(" 9- remover mesa de voto");
+			System.out.println("10- Consultar mesas de voto");
+			System.out.println(" 0- Sair");
 			
 			switch(textEditor.pedeNumero("Opção: ", 0, 9)) {
 				case 1:
-					//TODO
+					Eleicao eleicao = pedeEleicao();
+					if(eleicao!=null){
+						if(comunicacao.novaEleicao(eleicao)){
+							System.out.println("Eleição criada com sucesso");
+						}else{
+							System.out.println("Eleição não criada");
+						}
+					}
 					break;
 				case 2:
-					//TODO
+					Eleicao eleicao1 = escolheEleicao();
+					if(eleicao1!=null){
+						if(comunicacao.removerEleicao(eleicao1)){
+							System.out.println("Eleicao removida com sucesso");
+						}else{
+							System.out.println("Eleicao não removida");
+						}
+					}
 					break;
 				case 3:
-					//TODO
+					for (Eleicao eleiTemp:comunicacao.listaEleicao()){
+						System.out.println(comunicacao.detalheEleicao(eleiTemp));
+					}
 					break;
 				case 4:
-					//TODO
+					Eleicao eleicao2 = escolheEleicao();
+					Lista lista = pedeLista(eleicao2);
+					if(eleicao2.getTipo().equalsIgnoreCase("faculdade") || 
+							eleicao2.getTipo().equalsIgnoreCase("departamento")||
+									eleicao2.getTipo().equalsIgnoreCase("conselhoGeral")){
+						System.out.println("Esta eleicao não permite listas");
+					}else{
+					if(lista!=null && eleicao2!=null){
+						if(comunicacao.addCandidato(lista, eleicao2)){
+							System.out.println("Lista adiciona com sucesso");
+						}else{
+							System.out.println("Lista não adicionada");
+						}
+					}}
 					break;
 				case 5:
-					//TODO
+					Eleicao eleicao5 = escolheEleicao();
+					CandidatoIndividual candInd = pedeCandIndividual(eleicao5);
+					
+					if(eleicao5.getTipo().equalsIgnoreCase("faculdade") || 
+							eleicao5.getTipo().equalsIgnoreCase("departamento")||
+									eleicao5.getTipo().equalsIgnoreCase("conselhoGeral")){
+						if(candInd!=null){
+							if(comunicacao.addCandidato(candInd, eleicao5)){
+								System.out.println("Candidato adicionado com sucesso");
+							}else{
+								System.out.println("Candidato não adicionado");
+							}
+						}
+					
+					}else{
+						System.out.println("Esta eleicao não permite candidatos individuais");
+					}
 					break;
 				case 6:
-					//TODO
+					Eleicao eleicao3 = escolheEleicao();
+					Candidatos cand = escolheCandidato(eleicao3);
+					if(cand!=null){
+						if(comunicacao.removeCandidato(cand, eleicao3)){
+							System.out.println("Lista Removida");
+						}
+						else{
+							System.out.println("Lista não removida");
+						}
+					}
+					
 					break;
 				case 7:
-					//TODO
+					Eleicao eleicao4 = escolheEleicao();
+					for(Candidatos candTemp:comunicacao.listaCandidatos(eleicao4)){
+						if(candTemp.getTipo().equalsIgnoreCase("lista")){
+							Lista listaTemp = (Lista) candTemp;
+							System.out.println("Lista: "+listaTemp.getNome());
+							System.out.println("Votos: "+listaTemp.getnVotos());
+							for(PessoaLista pessoaTemp:listaTemp.getLista_pessoas()){
+								System.out.println("Cargo: "+pessoaTemp.getCargo()+" Pessoa: "+pessoaTemp.getPessoa().getNcc()+
+										" "+pessoaTemp.getPessoa().getNcc());
+							}
+						}
+						else{
+							CandidatoIndividual candIndTemp = (CandidatoIndividual) candTemp;
+							System.out.println("Candidato: "+candIndTemp.getPessoa().getNome()+" "+candIndTemp.getPessoa().getNcc());
+							System.out.println("Votos: "+candIndTemp.getnVotos());
+							System.out.println("");
+						}
+					}
 					break;
 				case 8:
-					//TODO
+					MesaVoto mesa1 = pedeMesaVoto();
+					if(mesa1!=null){
+						if(comunicacao.addMesaVoto(mesa1)){
+							System.out.println("Mesa adiciona com sucesso");
+						}
+						else{
+							System.out.println("Mesa não adicionada");
+						}
+					}
 					break;
 				case 9:
-					//TODO
+					Eleicao eleicao6 = escolheEleicao();
+					MesaVoto mesa2 = escolheMesavoto(eleicao6);
+					if(mesa2!=null){
+						if(comunicacao.removeMesaVoto(mesa2)){
+							System.out.println("Mesa removida");
+						}else{
+							System.out.println("Mesa não removida");
+						}
+					}
+					break;
+				case 10:
+					Eleicao eleicao7 = escolheEleicao();
+					for(MesaVoto mesaTemp:comunicacao.listMesaVoto(eleicao7, null)){
+						System.out.println("Mesa de voto: "+mesaTemp.getUsername() + " - "+mesaTemp.getDep().getSigla()+
+								" - "+mesaTemp.getDep().getFac().getSigla());
+						
+					}
 					break;
 				case 0:
 					return;
@@ -335,6 +432,115 @@ public class Consola extends UnicastRemoteObject {
 			num++;
 		}
 		return departamentos.get(textEditor.pedeNumero("Numero: ", 0, num-1));
+	}
+	public Eleicao pedeEleicao()throws RemoteException{
+		Eleicao eleicao = new Eleicao();
+		eleicao.setCandidatos(null);
+		eleicao.setDataInicio(textEditor.dataEleicao());
+		eleicao.setDataFim(textEditor.dataEleicao());
+		eleicao.setMesaVoto(null);
+		eleicao.setTitulo(textEditor.leLinha("Titulo: "));
+		eleicao.setDescricao(textEditor.leLinha("Descricão: "));
+		eleicao.setnVotoBNA(0);
+		System.out.println("1- faculdade");
+		System.out.println("2- departamento");
+		System.out.println("3- conselhoGeral");
+		System.out.println("4- nucleo");
+		switch (textEditor.pedeNumero("Opção: ", 1, 4)) {
+			case 1:
+				eleicao.setTipo("faculdade");
+				eleicao.setDep(null);
+				eleicao.setFac(escolheFaculdade());
+				break;
+			case 2:
+				eleicao.setTipo("departamento");
+				eleicao.setDep(escolheDepartamento());
+				eleicao.setFac(eleicao.getDep().getFac());
+				break;
+			case 3:
+				eleicao.setTipo("conselhoGeral");
+				eleicao.setDep(null);
+				eleicao.setFac(null);
+				break;
+			case 4:
+				eleicao.setTipo("nucleo");
+				eleicao.setDep(escolheDepartamento());
+				eleicao.setFac(eleicao.getDep().getFac());
+				break;
+		}
+		System.out.println("1- Confirmar");
+		System.out.println("0- Cancelar");
+		if(textEditor.pedeNumero("opção: ", 0, 1)==1){
+			return eleicao;
+		}
+		return null;
+	}
+	public Eleicao escolheEleicao() throws RemoteException{
+		int num = 0;
+		ArrayList<Eleicao>listaEleicao = comunicacao.listaEleicao();
+		if(listaEleicao==null){return null;}
+		for(Eleicao eleicaoTemp:listaEleicao){
+			System.out.printf("%d %s %s %s\n",num,eleicaoTemp.getDataInicio(),eleicaoTemp.getDataFim(),eleicaoTemp.getTitulo());
+			num++;
+		}
+		return listaEleicao.get(textEditor.pedeNumero("Opção: ", 0, num-1));
+	}
+	public Lista pedeLista(Eleicao eleicao) throws RemoteException{
+		Lista lista = new Lista();
+		lista.setEleicao(eleicao);
+		lista.setNome(textEditor.leLinha("Nome: "));
+		ArrayList<PessoaLista> pessoaLista = new ArrayList<PessoaLista>();
+		while(true){
+			System.out.println("1 - Adicionar pessoa");
+			System.out.println("0 - Concluido");
+			if(textEditor.pedeNumero("Opção: ", 0, 1)==0){
+				break;
+			}
+			PessoaLista pessoaL = new PessoaLista();
+			pessoaL.setPessoa(comunicacao.procuraPessoa(textEditor.pedeNumero("Ncc: ", 9999999, 100000000)));
+			pessoaL.setCargo(textEditor.leLinha("Cargo: "));
+			pessoaLista.add(pessoaL);
+		}
+		lista.setLista_pessoas(pessoaLista);
+		return lista;
+	}
+	public CandidatoIndividual pedeCandIndividual(Eleicao eleicao) throws RemoteException{
+		CandidatoIndividual candInd = new CandidatoIndividual();
+		candInd.setEleicao(eleicao);
+		candInd.setPessoa(comunicacao.procuraPessoa(textEditor.pedeNumero("Ncc: ", 9999999, 100000000)));
+		return candInd;
+	}
+	public Candidatos escolheCandidato(Eleicao eleicao){
+		int num = 0;
+		for(Candidatos cand:eleicao.getCandidatos()){
+			if(cand.getTipo().equalsIgnoreCase("lista")){
+				Lista lista = (Lista) cand;
+				System.out.printf("%n %s %s\n",num,lista.getId(),lista.getNome());
+			}else{
+				CandidatoIndividual candIn = (CandidatoIndividual) cand;
+				System.out.printf("%n %s %s\n",num,candIn.getId(),candIn.getPessoa().getNome());
+				
+			}
+			num++;
+		}
+		
+		return eleicao.getCandidatos().get(textEditor.pedeNumero("Opção: ", 0, num-1));
+	}
+	public MesaVoto pedeMesaVoto()throws RemoteException{
+		MesaVoto mesa = new MesaVoto();
+		mesa.setDep(escolheDepartamento());
+		mesa.setEleicao(escolheEleicao());
+		mesa.setUsername(textEditor.leLinha("Username: "));
+		mesa.setPassword(textEditor.leLinha("Password: "));
+		return mesa;
+	}
+	public MesaVoto escolheMesavoto(Eleicao eleicao){
+		int num = 0;
+		for(MesaVoto mesaTemp:eleicao.getMesaVoto()){
+			System.out.printf("%d %s %s\n",num,mesaTemp.getDep().getSigla(),mesaTemp.getUsername());
+			num++;
+		}
+		return eleicao.getMesaVoto().get(textEditor.pedeNumero("Opção: ", 0, num-1));
 	}
 
 }

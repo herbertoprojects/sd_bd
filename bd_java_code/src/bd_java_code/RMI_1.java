@@ -41,6 +41,8 @@ public interface RMI_1 extends Remote{
 	public boolean removePessoaLista(PessoaLista pessoaLista,Lista lista) throws RemoteException;
 	public ArrayList <PessoaLista> listaPessoaLista(Lista lista) throws RemoteException;
 	
+	public String detalheEleicao(Eleicao eleicao) throws RemoteException;
+	
 	
 	//Ainda não estao modificadas, ainda para pensar
 	public MesaVoto ligarServidor(Eleicao eleicao, String nomeMesaVoto,String passwordMesaVoto) throws RemoteException;

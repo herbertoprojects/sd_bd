@@ -8,6 +8,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 	
@@ -36,6 +37,7 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 		try{
 			LocateRegistry.createRegistry(portoConsola);
 			Naming.rebind("rmi://localhost:"+portoConsola+"/rmi", this);
+			Naming.rebind("rmi://localhost:"+portoConsola+"/tcpServer", this);
 			return true;
 		}catch(RemoteException | MalformedURLException e){
 			return false;
@@ -709,7 +711,6 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 		}
 	}@Override
 	public Boolean validaUser(MesaVoto mesa, int ncc, String senha) throws RemoteException {
-		// TODO Auto-generated method stub
 		String comando = "select count(*) from pessoa where ncc = "+ncc+" and senha = '"+senha+"'";
 		ResultSet res = ligacao.executaSQL(comando);
 		if(res == null){return false;}
@@ -727,10 +728,14 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 			try{res.close();}catch(Exception e1){}
 			return false;
 		}
-	}@Override
+	}
+	@Override
 	public Boolean votar(MesaVoto mesa, Candidatos cand, int ncc, String senha) throws RemoteException {
-		// TODO Auto-generated method stub
 		ligacao.inicioTransacao();
+		if(textEditor.dataEleicao(mesa.getEleicao().getDataFim()).after(new Date())){
+			ligacao.voltarTransacao();
+			return false;
+		}
 		if(validaUser(mesa, ncc, senha)){
 			if(testaVotar(mesa, ncc)){
 				if(cand == null){
@@ -781,5 +786,32 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 		}
 		ligacao.voltarTransacao();
 		return false;
+	}
+	
+	@Override
+	public String detalheEleicao(Eleicao eleicao) throws RemoteException {
+		// TODO Auto-generated method stub
+		Date dataEleicaoFim = textEditor.dataEleicao(eleicao.getDataFim());
+		Date dataEleicaoInicio = textEditor.dataEleicao(eleicao.getDataInicio());
+		if((new Date()).after(dataEleicaoFim)){
+			String resposta = eleicao.getTitulo();
+			resposta += "- terminda\n";
+			for(Candidatos cand:eleicao.getCandidatos()){
+				if(cand.getTipo().equals("lista")){
+					Lista lista = (Lista) cand;
+					resposta += String.format("%d %s votos - %d\n", lista.getId(),lista.getNome(),lista.getnVotos());
+				}else{
+					CandidatoIndividual candI = (CandidatoIndividual) cand;
+					resposta += String.format("%d %d %s votos - %d\n",candI.getId(),
+							candI.getPessoa().getNcc(),
+							candI.getPessoa().getNome(),
+							candI.getnVotos());
+				}
+			}
+			resposta += "Votos Branco ou nulos: "+eleicao.getnVotoBNA();
+			resposta += "\n";
+			return resposta;
+		}
+		return null;
 	}
 }
