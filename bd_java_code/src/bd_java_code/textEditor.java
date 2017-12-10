@@ -57,7 +57,7 @@ public abstract class textEditor {
 		int ano = pedeNumero("ano: ", 1900, 2100);
 		int mes = pedeNumero("mes: ", 1, 12);
 		int dia = pedeNumero("dia: ", 1, 31);
-		int hora = pedeNumero("hora: ", 0, 23);
+		int hora = pedeNumero("hora: ", 1, 12);
 		int minutos = pedeNumero("minutos: ", 0, 60);
 		
 		return String.format("%s:%s:%s %s:%s",
@@ -69,10 +69,11 @@ public abstract class textEditor {
 	}
 	public static Date dataEleicao(String data){
 		Date dataN = new Date();
+		System.out.println(data);
 		String [] lista = data.split(" ");
-		dataN.setYear(Integer.parseInt(lista[0].split(":")[0]));
-		dataN.setMonth(Integer.parseInt(lista[0].split(":")[1]));
-		dataN.setDate(Integer.parseInt(lista[0].split(":")[2]));
+		dataN.setYear(Integer.parseInt(lista[0].split("-")[0]));
+		dataN.setMonth(Integer.parseInt(lista[0].split("-")[1]));
+		dataN.setDate(Integer.parseInt(lista[0].split("-")[2]));
 		dataN.setHours(Integer.parseInt(lista[1].split(":")[0]));
 		dataN.setMinutes(Integer.parseInt(lista[1].split(":")[1]));
 		return dataN;

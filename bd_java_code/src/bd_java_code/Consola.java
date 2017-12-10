@@ -228,7 +228,7 @@ public class Consola extends UnicastRemoteObject {
 			System.out.println("10- Consultar mesas de voto");
 			System.out.println(" 0- Sair");
 			
-			switch(textEditor.pedeNumero("Opção: ", 0, 9)) {
+			switch(textEditor.pedeNumero("Opção: ", 0, 10)) {
 				case 1:
 					Eleicao eleicao = pedeEleicao();
 					if(eleicao!=null){
