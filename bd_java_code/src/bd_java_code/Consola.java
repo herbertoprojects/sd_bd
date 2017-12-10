@@ -8,7 +8,9 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class Consola extends UnicastRemoteObject {
 	
+	private static final long serialVersionUID = -2292307713953902247L;
 	private RMI_1 comunicacao;
+	public int portoConsola = 9000;
 	
 	public Consola () throws RemoteException {
 		super();
@@ -18,13 +20,12 @@ public class Consola extends UnicastRemoteObject {
 	public static void main(String[] args) {
 		
 		try {
-		
-		Consola consola = new Consola();
-		consola.menuInicial();
-		consola.comunicacao = (RMI_1) Naming.lookup("rmi://192.168.0.1/rmi");
-		
+			Consola consola = new Consola();
+			consola.comunicacao = (RMI_1) Naming.lookup("rmi://localhost:"+consola.portoConsola+"/rmi");
+			consola.menuInicial();
 		}
 		catch (RemoteException | MalformedURLException | NotBoundException e){
+			e.printStackTrace();
 			
 		}
 	}
@@ -129,15 +130,6 @@ public class Consola extends UnicastRemoteObject {
 			}
 			textEditor.leLinha("Continuar...");
 		}
-	}
-	
-	
-	private boolean consultaFac() throws RemoteException {
-		
-
-		
-		return false;
-
 	}
 
 	public void menuDep() throws RemoteException{

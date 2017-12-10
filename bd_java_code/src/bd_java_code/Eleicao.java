@@ -1,8 +1,13 @@
 package bd_java_code;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Eleicao {
+public class Eleicao implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private String tipo;
 	private String dataInicio;

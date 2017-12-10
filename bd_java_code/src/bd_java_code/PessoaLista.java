@@ -1,6 +1,8 @@
 package bd_java_code;
 
-public class PessoaLista {
+import java.io.Serializable;
+
+public class PessoaLista implements Serializable {
 	private Pessoa pessoa;
 	private String Cargo;
 	

@@ -1,8 +1,9 @@
 package bd_java_code;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Lista extends Candidatos {
+public class Lista extends Candidatos implements Serializable {
 	private ArrayList <PessoaLista> lista_pessoas;
 	private String nome;
 	public Lista() {
