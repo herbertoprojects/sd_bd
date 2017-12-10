@@ -1,6 +1,5 @@
 package bd_java_code;
 
-import java.sql.Date;
 import java.util.Scanner;
 
 
@@ -43,54 +42,6 @@ public abstract class textEditor {
 		System.out.print(texto);
 		String textoR = sc.nextLine();
 		return textoR;
-	}
-	
-	public static String pedeData(String text) {
-		Scanner sc = new Scanner(System.in);
-		System.out.println(text);
-		int anoTemp = pedeNumero("Ano: ", 1900,1900 + (new Date(System.currentTimeMillis()).getYear()));
-		int mesTemp = pedeNumero("Mês: ", 1, 12);		
-
-		String data = formatNum(mesTemp, 2)+"/"+formatNum(anoTemp, 4);
-		return data;	
-	}
-	
-	public static int pedeDia(String texto, int mes) {
-		int diaTemp;
-		while(true) {
-			diaTemp = pedeNumero(texto, 1, 31);
-			switch (mes){
-			case 2:
-				if(diaTemp>29) {System.out.println("Dia invalido");}else {return diaTemp;}
-				break;
-			case 4:
-			case 6:
-			case 9:
-			case 11:
-				if(diaTemp>30) {System.out.println("Dia invalido");}else {return diaTemp;}
-				break;
-			default:
-				return diaTemp;
-				
-			}
-		}
-	}
-	
-	public static String pedeDataHora(String texto) {
-		System.out.println(texto);
-		
-		int anoTemp = pedeNumero("Ano: ", 1900,2200);
-		int mesTemp = pedeNumero("Mês: ", 1, 12);
-		int diaTemp = pedeDia("Dia: ",mesTemp);
-		
-		int horaTem = pedeNumero("Horas: ",0,23);
-		int minTemp = pedeNumero("Minutos: ",0,59);
-		
-		return (formatNum(anoTemp, 4)+"/"+
-				formatNum(mesTemp, 2)+"/"+
-				formatNum(diaTemp, 2)+" "+
-				formatNum(horaTem, 2)+":"+
-				formatNum(minTemp, 2));
 	}
 	
 	public static String formatNum (int num,int casas) {
