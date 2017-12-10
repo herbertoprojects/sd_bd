@@ -1,5 +1,6 @@
 package bd_java_code;
 
+import java.util.Date;
 import java.util.Scanner;
 
 
@@ -50,6 +51,31 @@ public abstract class textEditor {
 			texto = "0"+texto;
 		}
 		return texto;
+	}
+	
+	public static String dataEleicao(){
+		int ano = pedeNumero("ano: ", 1900, 2100);
+		int mes = pedeNumero("mes: ", 1, 12);
+		int dia = pedeNumero("dia: ", 1, 31);
+		int hora = pedeNumero("hora: ", 0, 23);
+		int minutos = pedeNumero("minutos: ", 0, 60);
+		
+		return String.format("%s:%s:%s %s:%s",
+				formatNum(ano, 4),
+				formatNum(mes, 2),
+				formatNum(dia, 2),
+				formatNum(hora, 2),
+				formatNum(minutos, 2));
+	}
+	public static Date dataEleicao(String data){
+		Date dataN = new Date();
+		String [] lista = data.split(" ");
+		dataN.setYear(Integer.parseInt(lista[0].split(":")[0]));
+		dataN.setMonth(Integer.parseInt(lista[0].split(":")[1]));
+		dataN.setDate(Integer.parseInt(lista[0].split(":")[2]));
+		dataN.setHours(Integer.parseInt(lista[1].split(":")[0]));
+		dataN.setMinutes(Integer.parseInt(lista[1].split(":")[1]));
+		return dataN;
 	}
 	
 	
