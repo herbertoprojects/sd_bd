@@ -23,6 +23,7 @@ CREATE TABLE Candidatos (
   EleicaoID number(10) NOT NULL, 
   tipo      varchar2(20) NOT NULL, 
   nVotos    number(10), 
+  valido	varchar2(10),
   PRIMARY KEY (ID, 
   EleicaoID));
 CREATE TABLE Departamento (
