@@ -6,6 +6,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class Consola extends UnicastRemoteObject {
 	
@@ -20,10 +21,13 @@ public class Consola extends UnicastRemoteObject {
 
 	public static void main(String[] args) {
 		
+		System.out.println((Calendar.getInstance().toString()));
 		try {
+		
 			Consola consola = new Consola();
 			consola.comunicacao = (RMI_1) Naming.lookup("rmi://localhost:"+consola.portoConsola+"/rmi");
 			consola.menuInicial();
+			
 		}
 		catch (RemoteException | MalformedURLException | NotBoundException e){
 			System.out.println("Erro ligacao RMI");
