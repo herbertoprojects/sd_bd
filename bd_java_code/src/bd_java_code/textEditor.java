@@ -67,16 +67,22 @@ public abstract class textEditor {
 				formatNum(hora, 2),
 				formatNum(minutos, 2));
 	}
-	public static Date dataEleicao(String data){
-		Date dataN = new Date();
-		System.out.println(data);
-		String [] lista = data.split(" ");
-		dataN.setYear(Integer.parseInt(lista[0].split("-")[0]));
-		dataN.setMonth(Integer.parseInt(lista[0].split("-")[1]));
-		dataN.setDate(Integer.parseInt(lista[0].split("-")[2]));
-		dataN.setHours(Integer.parseInt(lista[1].split(":")[0]));
-		dataN.setMinutes(Integer.parseInt(lista[1].split(":")[1]));
-		return dataN;
+	public static dataEleicao dataStringToData(String data){
+		
+		String [] dataLista = (data.split(" "));
+		String [] data_2 = dataLista[0].split(":");
+		String [] horas = dataLista[1].split(":");
+		dataEleicao eleicao = new dataEleicao();
+		eleicao.ano = Integer.parseInt(data_2[0]);
+		eleicao.mes = Integer.parseInt(data_2[1]);
+		eleicao.dia = Integer.parseInt(data_2[2]);
+		eleicao.hora = Integer.parseInt(horas[0]);
+		eleicao.minuto = Integer.parseInt(horas[1]);
+		
+		return eleicao;
+		
+		
+		
 	}
 	
 	

@@ -7,8 +7,13 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+
+import sun.util.calendar.CalendarDate;
 
 public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 	
@@ -791,27 +796,22 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 	@Override
 	public String detalheEleicao(Eleicao eleicao) throws RemoteException {
 		// TODO Auto-generated method stub
-		Date dataEleicaoFim = textEditor.dataEleicao(eleicao.getDataFim());
-		Date dataEleicaoInicio = textEditor.dataEleicao(eleicao.getDataInicio());
-		if((new Date()).after(dataEleicaoFim)){
-			String resposta = eleicao.getTitulo();
-			resposta += "- terminda\n";
-			for(Candidatos cand:eleicao.getCandidatos()){
-				if(cand.getTipo().equals("lista")){
-					Lista lista = (Lista) cand;
-					resposta += String.format("%d %s votos - %d\n", lista.getId(),lista.getNome(),lista.getnVotos());
-				}else{
-					CandidatoIndividual candI = (CandidatoIndividual) cand;
-					resposta += String.format("%d %d %s votos - %d\n",candI.getId(),
-							candI.getPessoa().getNcc(),
-							candI.getPessoa().getNome(),
-							candI.getnVotos());
-				}
-			}
-			resposta += "Votos Branco ou nulos: "+eleicao.getnVotoBNA();
-			resposta += "\n";
-			return resposta;
+		
+		DateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd hh:mm");
+		Calendar cal = Calendar.getInstance();
+		dataEleicao data_atual = textEditor.dataStringToData(dateFormat.format(cal));
+		if (data_atual.anterior_data(textEditor.dataStringToData(eleicao.getDataInicio()))) {
+			
 		}
-		return null;
+		else {
+			if (data_atual.anterior_data(textEditor.dataStringToData(eleicao.getDataFim()))) {
+				
+			}
+			else {
+				
+			}
+		}
+		return "";
+	
 	}
 }

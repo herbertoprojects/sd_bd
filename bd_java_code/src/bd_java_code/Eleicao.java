@@ -20,6 +20,8 @@ public class Eleicao implements Serializable {
 	private ArrayList<Candidatos> candidatos;
 	private ArrayList<MesaVoto> mesaVoto;
 	
+	
+	
 	public Eleicao() {
 		// TODO Auto-generated constructor stub
 	}
