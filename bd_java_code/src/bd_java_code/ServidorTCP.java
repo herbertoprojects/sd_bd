@@ -16,7 +16,7 @@ public class ServidorTCP {
 	public String user;
 	public String pass;
 	public MesaVoto mesa;
-	public boolean ativo;
+	public boolean ativo = true;
 	
 	public ArrayList<Pessoa> pessoasParaVotar;
 	
@@ -53,6 +53,7 @@ public class ServidorTCP {
 			}
 			eleicao = eleicoesValidas.get(opc-1);
 			if(autenticar()){
+				(new Thread(){ public void run(){aceitaLigacoes();}}).start();
 				pedeUser();
 			}else{
 				ligar_base();
@@ -93,7 +94,9 @@ public class ServidorTCP {
 		try {
 			ServerSocket serverSocket = new ServerSocket(portoTcpServer);
 			while(ativo){
+				System.out.println("A espera de ligacoes...");
 				Socket cliente = serverSocket.accept();
+				System.out.println("ligacao aceite");
 				new terminalVoto(this, cliente);
 			}
 			serverSocket.close();
