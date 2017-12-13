@@ -77,11 +77,9 @@ public class ServidorTCP {
 			ncc = textEditor.pedeNumero("Ncc: ", 9999999, 1000000000);
 			
 			if(comunicacao.testaVotar(mesa, ncc)){
-				synchronized (this) {
 					Pessoa pessoa = comunicacao.procuraPessoa(ncc);
 					if(pessoa!=null){
 						this.pessoasParaVotar.add(pessoa);
-					}
 				}
 			}
 			else{
@@ -94,10 +92,8 @@ public class ServidorTCP {
 		try {
 			ServerSocket serverSocket = new ServerSocket(portoTcpServer);
 			while(ativo){
-				System.out.println("A espera de ligacoes...");
 				Socket cliente = serverSocket.accept();
-				System.out.println("ligacao aceite");
-				new terminalVoto(this, cliente);
+				new terminalVoto(this, cliente).start();
 			}
 			serverSocket.close();
 		} catch (IOException e) {
