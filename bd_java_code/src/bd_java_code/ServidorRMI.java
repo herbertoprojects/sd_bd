@@ -443,10 +443,8 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 				if(candidato.getTipo().equalsIgnoreCase("Individual")){
 					CandidatoIndividual candIndividual = (CandidatoIndividual) candidato;
 					comando = "INSERT INTO Individual VALUES (";
-					comando += candIndividual.getPessoa();
-					comando += ",";
-					comando += candIndividual.getId();
-					comando += ",";
+					comando += candIndividual.getPessoa().getNcc();
+					comando += ",seq_Candidato.CURRVAL,";
 					comando += candIndividual.getEleicao().getId();
 					comando += ")";
 					if(ligacao.executaUpdateSQL(comando)){
@@ -797,22 +795,48 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 	@Override
 	public String detalheEleicao(Eleicao eleicao) throws RemoteException {
 		// TODO Auto-generated method stub
-		
+		String resultado = "";
 		DateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd hh:mm");
 		dataEleicao data_atual = textEditor.dataStringToData(dateFormat.format(new Date()));
 		if (!data_atual.maior_data(textEditor.dataStringToData(eleicao.getDataInicio()))) {
-			System.out.println(eleicao.getDataInicio()+"-"+eleicao.getDataFim()+": Ainda nao comecou");
+			resultado += "\nTítulo eleição: "+eleicao.getTitulo()+" - Data início: "+eleicao.getDataInicio()+" - Data fim: "+ eleicao.getDataFim();
+			resultado += "\nEleição ainda não iniciada.";
+			for(Candidatos candTemp: eleicao.getCandidatos()) {
+				if(candTemp.getTipo().equalsIgnoreCase("lista")) {
+					Lista lista = (Lista) candTemp;
+					resultado += "\nNúmero candidato: "+lista.getId()+" - Nome lista: "+lista.getNome()+" Membros: "+lista.getLista_pessoas();
+					for(PessoaLista pessoalista : lista.getLista_pessoas()) {
+						resultado += "\n\tCC: "+pessoalista.getPessoa().getNcc()+" - Cargo: "+pessoalista.getCargo()+ " - Nome: "+pessoalista.getPessoa().getNome();
+					}
+					resultado += "\n";
+				}else {
+					CandidatoIndividual cand = (CandidatoIndividual) candTemp;
+					resultado += "\nNúmero candidato: "+cand.getId()+" - Nome: "+cand.getPessoa().getNome()+" - CC: "+cand.getPessoa().getNcc();
+				}
+			}
 		}
 		else {
 			if (data_atual.maior_data(textEditor.dataStringToData(eleicao.getDataFim()))) {
+				resultado += "\nTítulo eleição: "+eleicao.getTitulo()+" - Data início: "+eleicao.getDataInicio()+" - Data fim: "+ eleicao.getDataFim();
+				resultado += "\nEleição terminada.";
+				resultado += "\nVotos em branco/nulos: "+eleicao.getnVotoBNA();
+				for(Candidatos candTemp: eleicao.getCandidatos()) {
+					if(candTemp.getTipo().equalsIgnoreCase("lista")) {
+						Lista lista = (Lista) candTemp;
+						resultado += "\nNúmero candidato: "+lista.getId()+" - Nome lista: "+lista.getNome()+" Membros: "+lista.getLista_pessoas()+"Votos: "+lista.getnVotos();
+						resultado += "\n";
+					}else {
+						CandidatoIndividual cand = (CandidatoIndividual) candTemp;
+						resultado += "\nNúmero candidato: "+cand.getId()+" - Nome: "+cand.getPessoa().getNome()+" - CC: "+cand.getPessoa().getNcc()+" - Votos: "+cand.getnVotos();
+					}
+				}
 				
-				System.out.println(eleicao.getDataInicio()+"-"+eleicao.getDataFim()+": ja acabou");
 			}
 			else {
 				System.out.println(eleicao.getDataInicio()+"-"+eleicao.getDataFim()+": A decorrer");
 			}
 		}
-		return "";
+		return resultado;
 	
 	}
 }
