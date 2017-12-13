@@ -16,7 +16,7 @@ public class ServidorTCP {
 	public String user;
 	public String pass;
 	public MesaVoto mesa;
-	public boolean ativo;
+	public boolean ativo = true;
 	
 	public ArrayList<Pessoa> pessoasParaVotar;
 	
@@ -53,6 +53,7 @@ public class ServidorTCP {
 			}
 			eleicao = eleicoesValidas.get(opc-1);
 			if(autenticar()){
+				(new Thread(){ public void run(){aceitaLigacoes();}}).start();
 				pedeUser();
 			}else{
 				ligar_base();
@@ -76,11 +77,9 @@ public class ServidorTCP {
 			ncc = textEditor.pedeNumero("Ncc: ", 9999999, 1000000000);
 			
 			if(comunicacao.testaVotar(mesa, ncc)){
-				synchronized (this) {
 					Pessoa pessoa = comunicacao.procuraPessoa(ncc);
 					if(pessoa!=null){
 						this.pessoasParaVotar.add(pessoa);
-					}
 				}
 			}
 			else{
@@ -94,7 +93,7 @@ public class ServidorTCP {
 			ServerSocket serverSocket = new ServerSocket(portoTcpServer);
 			while(ativo){
 				Socket cliente = serverSocket.accept();
-				new terminalVoto(this, cliente);
+				new terminalVoto(this, cliente).start();
 			}
 			serverSocket.close();
 		} catch (IOException e) {
