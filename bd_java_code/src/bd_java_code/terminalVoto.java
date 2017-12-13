@@ -26,27 +26,24 @@ public class terminalVoto extends Thread {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		System.out.println("Nova thread");
-		synchronized (server) {
-			if(server.terminaisDisponiveis==null || server.pessoasParaVotar==null){
-				return;
-			}
-			if(server.terminaisDisponiveis.size()>0){
-				this.socketTerminal = server.terminaisDisponiveis.remove(0);
-				if(server.pessoasParaVotar.size()>0){
-					this.pessoa = server.pessoasParaVotar.remove(0);
-					comunicacao();
-				}
-				else{
-					server.terminaisDisponiveis.add(this.socketTerminal);
+		while(true){
+			synchronized (server) {
+				if(server.ativo){
+					if(!server.pessoasParaVotar.isEmpty()){
+						pessoa = server.pessoasParaVotar.remove(0);
+						comunicacao();
+					}
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}else{
 					return;
 				}
-			}
-			
+			}	
 		}
-		
-		return;
-		
 	}
 	
 	private void comunicacao(){
