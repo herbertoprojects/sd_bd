@@ -5,8 +5,11 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class Consola extends UnicastRemoteObject {
 	
@@ -20,8 +23,6 @@ public class Consola extends UnicastRemoteObject {
 	}
 
 	public static void main(String[] args) {
-		
-		System.out.println((Calendar.getInstance().toString()));
 		try {
 		
 			Consola consola = new Consola();
@@ -254,7 +255,8 @@ public class Consola extends UnicastRemoteObject {
 					}
 					break;
 				case 3:
-					for (Eleicao eleiTemp:comunicacao.listaEleicao()){
+					ArrayList<Eleicao> listaEleicao = comunicacao.listaEleicao();
+					for (Eleicao eleiTemp:listaEleicao){
 						System.out.println(comunicacao.detalheEleicao(eleiTemp));
 					}
 					break;
@@ -442,7 +444,6 @@ public class Consola extends UnicastRemoteObject {
 		eleicao.setCandidatos(null);
 		eleicao.setDataInicio(textEditor.dataEleicao());
 		eleicao.setDataFim(textEditor.dataEleicao());
-		eleicao.setMesaVoto(null);
 		eleicao.setTitulo(textEditor.leLinha("Titulo: "));
 		eleicao.setDescricao(textEditor.leLinha("Descricão: "));
 		eleicao.setnVotoBNA(0);
@@ -538,13 +539,14 @@ public class Consola extends UnicastRemoteObject {
 		mesa.setPassword(textEditor.leLinha("Password: "));
 		return mesa;
 	}
-	public MesaVoto escolheMesavoto(Eleicao eleicao){
+	public MesaVoto escolheMesavoto(Eleicao eleicao) throws RemoteException{
 		int num = 0;
-		for(MesaVoto mesaTemp:eleicao.getMesaVoto()){
+		ArrayList <MesaVoto> mesasDeVoto = comunicacao.listMesaVoto(eleicao,null);
+		for(MesaVoto mesaTemp:mesasDeVoto){
 			System.out.printf("%d %s %s\n",num,mesaTemp.getDep().getSigla(),mesaTemp.getUsername());
 			num++;
 		}
-		return eleicao.getMesaVoto().get(textEditor.pedeNumero("Opção: ", 0, num-1));
+		return mesasDeVoto.get(textEditor.pedeNumero("Opção: ", 0, num-1));
 	}
 
 }

@@ -18,7 +18,6 @@ public class Eleicao implements Serializable {
 	private Departamento dep;
 	private Faculdade fac;
 	private ArrayList<Candidatos> candidatos;
-	private ArrayList<MesaVoto> mesaVoto;
 	
 	
 	
@@ -65,9 +64,5 @@ public class Eleicao implements Serializable {
 		return candidatos;
 	}public void setCandidatos(ArrayList<Candidatos> candidatos) {
 		this.candidatos = candidatos;
-	}public ArrayList<MesaVoto> getMesaVoto() {
-		return mesaVoto;
-	}public void setMesaVoto(ArrayList<MesaVoto> mesaVoto) {
-		this.mesaVoto = mesaVoto;
 	}
 }

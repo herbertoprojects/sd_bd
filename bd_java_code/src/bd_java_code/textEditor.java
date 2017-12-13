@@ -71,6 +71,7 @@ public abstract class textEditor {
 		
 		String [] dataLista = (data.split(" "));
 		String [] data_2 = dataLista[0].split(":");
+		if(data_2.length<2){data_2 = dataLista[0].split("-");}
 		String [] horas = dataLista[1].split(":");
 		dataEleicao eleicao = new dataEleicao();
 		eleicao.ano = Integer.parseInt(data_2[0]);
@@ -83,8 +84,6 @@ public abstract class textEditor {
 		
 		
 		
-	}
-	
-	
+	}	
 	
 }

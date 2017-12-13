@@ -10,10 +10,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-
-import sun.util.calendar.CalendarDate;
 
 public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 	
@@ -344,7 +341,6 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 				elecTemp.setDescricao(res.getString(6));
 				elecTemp.setnVotoBNA(res.getInt(7));;
 				elecTemp.setCandidatos(listaCandidatos(elecTemp));
-				elecTemp.setMesaVoto(listMesaVoto(elecTemp, null));
 				listaEleicoes.add(elecTemp);
 			}
 			res.close();
@@ -357,7 +353,7 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 	}
 	@Override
 	public ArrayList<Eleicao> listaEleicaoDecorrer() throws RemoteException {
-		String comando = "Select * from eleicao where DATAINICIO <= CURRENT_TIMESTAMP AND DATAFIM> CURRENT_TIMESTAMP;";
+		String comando = "Select * from eleicao where DATAINICIO <= CURRENT_TIMESTAMP AND DATAFIM > CURRENT_TIMESTAMP";
 		ResultSet res = ligacao.executaSQL(comando);
 		if(res == null){return null;}
 		try{
@@ -373,7 +369,6 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 				elecTemp.setDescricao(res.getString(6));
 				elecTemp.setnVotoBNA(res.getInt(7));;
 				elecTemp.setCandidatos(listaCandidatos(elecTemp));
-				elecTemp.setMesaVoto(listMesaVoto(elecTemp, null));
 				listaEleicoes.add(elecTemp);
 			}
 			res.close();
@@ -400,7 +395,6 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 				eleicao.setTitulo(res.getString(5));
 				eleicao.setDescricao(res.getString(6));
 				eleicao.setnVotoBNA(res.getInt(7));
-				eleicao.setMesaVoto(listMesaVoto(eleicao, null));
 				eleicao.setCandidatos(listaCandidatos(eleicao));
 				res.close();
 				return eleicao;
@@ -737,7 +731,11 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 	@Override
 	public Boolean votar(MesaVoto mesa, Candidatos cand, int ncc, String senha) throws RemoteException {
 		ligacao.inicioTransacao();
-		if(textEditor.dataEleicao(mesa.getEleicao().getDataFim()).after(new Date())){
+		DateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd hh:mm");
+		dataEleicao data_atual = textEditor.dataStringToData(dateFormat.format(new Date()));
+		
+		if(!data_atual.maior_data(textEditor.dataStringToData(mesa.getEleicao().getDataFim()))||
+				data_atual.maior_data(textEditor.dataStringToData(mesa.getEleicao().getDataInicio()))){
 			ligacao.voltarTransacao();
 			return false;
 		}
@@ -748,6 +746,9 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 										mesa.getEleicao().getId()+
 										") WHERE ID = "+
 										mesa.getEleicao().getId();
+					
+					
+					
 					if(!ligacao.executaUpdateSQL(comando)){
 						ligacao.voltarTransacao();
 						return false;
@@ -798,17 +799,17 @@ public class ServidorRMI extends UnicastRemoteObject implements RMI_1 {
 		// TODO Auto-generated method stub
 		
 		DateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd hh:mm");
-		Calendar cal = Calendar.getInstance();
-		dataEleicao data_atual = textEditor.dataStringToData(dateFormat.format(cal));
-		if (data_atual.anterior_data(textEditor.dataStringToData(eleicao.getDataInicio()))) {
-			
+		dataEleicao data_atual = textEditor.dataStringToData(dateFormat.format(new Date()));
+		if (!data_atual.maior_data(textEditor.dataStringToData(eleicao.getDataInicio()))) {
+			System.out.println(eleicao.getDataInicio()+"-"+eleicao.getDataFim()+": Ainda nao comecou");
 		}
 		else {
-			if (data_atual.anterior_data(textEditor.dataStringToData(eleicao.getDataFim()))) {
+			if (data_atual.maior_data(textEditor.dataStringToData(eleicao.getDataFim()))) {
 				
+				System.out.println(eleicao.getDataInicio()+"-"+eleicao.getDataFim()+": ja acabou");
 			}
 			else {
-				
+				System.out.println(eleicao.getDataInicio()+"-"+eleicao.getDataFim()+": A decorrer");
 			}
 		}
 		return "";

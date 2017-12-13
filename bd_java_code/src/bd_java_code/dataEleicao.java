@@ -18,8 +18,7 @@ public class dataEleicao {
 	}
 
 	
-	public boolean anterior_data (dataEleicao data){
-		
+	public boolean maior_data (dataEleicao data){
 		if(this.ano < data.ano) {return false;}
 		if(this.ano > data.ano) {return true;}
 		if(this.mes < data.mes) {return false;}
